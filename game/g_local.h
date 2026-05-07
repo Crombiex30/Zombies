@@ -275,6 +275,7 @@ typedef struct
 								// and increment only if 1, 2, or 3
 
 	gclient_t	*clients;		// [maxclients]
+	int showTab;
 
 	// can't store spawnpoint in level, because
 	// it would get overwritten by the savegame restore
