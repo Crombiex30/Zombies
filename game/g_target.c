@@ -163,11 +163,11 @@ void use_target_secret (edict_t *ent, edict_t *other, edict_t *activator)
 
 void SP_target_secret (edict_t *ent)
 {
-	if (deathmatch->value)
+	/*if (deathmatch->value)
 	{	// auto-remove for deathmatch
 		G_FreeEdict (ent);
 		return;
-	}
+	}*/
 
 	ent->use = use_target_secret;
 	if (!st.noise)
@@ -201,11 +201,11 @@ void use_target_goal (edict_t *ent, edict_t *other, edict_t *activator)
 
 void SP_target_goal (edict_t *ent)
 {
-	if (deathmatch->value)
+	/*if (deathmatch->value)
 	{	// auto-remove for deathmatch
 		G_FreeEdict (ent);
 		return;
-	}
+	}*/
 
 	ent->use = use_target_goal;
 	if (!st.noise)

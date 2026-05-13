@@ -869,6 +869,31 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	}
 }
 
+void Cmd_Spawn_f(edict_t *ent) 
+{
+	edict_t *monster;
+	char *name;
+
+	name = gi.argv(1);
+	monster = G_Spawn();
+
+	monster->classname = ED_NewString(name);
+
+
+	VectorCopy(ent->s.origin, monster->s.origin);
+	monster->s.origin[0] += 100;
+	
+	ED_CallSpawn(monster);
+	
+
+	//KillBox(monster);
+
+	gi.linkentity(monster);
+	//gi.dprintf(name);
+
+	return;
+}
+
 void Cmd_PlayerList_f(edict_t *ent)
 {
 	int i;
@@ -939,6 +964,7 @@ void ClientCommand (edict_t *ent)
 		Cmd_Help_f (ent);
 		return;
 	}
+	
 
 	if (level.intermissiontime)
 		return;
@@ -987,6 +1013,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_Wave_f (ent);
 	else if (Q_stricmp(cmd, "playerlist") == 0)
 		Cmd_PlayerList_f(ent);
+	else if (Q_stricmp(cmd, "spawn") == 0)
+		Cmd_Spawn_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

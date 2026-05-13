@@ -577,7 +577,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 			{
 				if ( ent->spawnflags & SPAWNFLAG_NOT_DEATHMATCH )
 				{
-					G_FreeEdict (ent);	
+					//G_FreeEdict (ent);	
 					inhibit++;
 					continue;
 				}
@@ -590,7 +590,7 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 					(((skill->value == 2) || (skill->value == 3)) && (ent->spawnflags & SPAWNFLAG_NOT_HARD))
 					)
 					{
-						G_FreeEdict (ent);	
+						//G_FreeEdict (ent);	
 						inhibit++;
 						continue;
 					}

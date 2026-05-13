@@ -2120,11 +2120,11 @@ tank commander's head
 */
 void SP_item_health (edict_t *self)
 {
-	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
+	/*if (deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH))
 	{
 		G_FreeEdict (self);
 		return;
-	}
+	}*/
 
 	self->model = "models/items/healing/medium/tris.md2";
 	self->count = 10;
@@ -2136,11 +2136,11 @@ void SP_item_health (edict_t *self)
 */
 void SP_item_health_small (edict_t *self)
 {
-	if ( deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH) )
+	/*if (deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH))
 	{
 		G_FreeEdict (self);
 		return;
-	}
+	}*/
 
 	self->model = "models/items/healing/stimpack/tris.md2";
 	self->count = 2;
