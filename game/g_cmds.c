@@ -924,6 +924,44 @@ void Cmd_PlayerList_f(edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "%s", text);
 }
 
+void Cmd_SpawnPerks_f(edict_t* ent)
+{
+	edict_t* quad;
+	edict_t* invul;
+	edict_t* head;
+	/*
+	"item_quad",
+	"item_invulnerability",
+	"item_ancient_head"
+	*/
+	quad = G_Spawn();
+	invul = G_Spawn();
+	head = G_Spawn();
+
+	quad->classname = "item_quad";
+	invul->classname = "item_invulnerability";
+	head->classname = "item_ancient_head";
+
+	VectorCopy(ent->s.origin, quad->s.origin);
+	VectorCopy(ent->s.origin, invul->s.origin);
+	VectorCopy(ent->s.origin, head->s.origin);
+	
+	quad->s.origin[0] += 100;
+	invul->s.origin[0] += 100;
+	invul->s.origin[1] += 50;
+	head->s.origin[0] += 100;
+	head->s.origin[1] -= 50;
+
+	ED_CallSpawn(quad);
+	ED_CallSpawn(invul);
+	ED_CallSpawn(head);
+
+
+	gi.linkentity(quad);
+	gi.linkentity(invul);
+	gi.linkentity(head);
+	
+}
 
 /*
 =================
@@ -1015,6 +1053,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_PlayerList_f(ent);
 	else if (Q_stricmp(cmd, "spawn") == 0)
 		Cmd_Spawn_f(ent);
+	else if (Q_stricmp(cmd, "spawnPerks") == 0)
+		Cmd_SpawnPerks_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

@@ -180,6 +180,12 @@ qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 			ent->item->use (other, ent->item);
 		}
 	}
+	if (((int)dmflags->value & DF_INSTANT_ITEMS) || ((ent->item->use == Use_Quad) && (ent->spawnflags & DROPPED_PLAYER_ITEM)))
+	{
+		if ((ent->item->use == Use_Quad) && (ent->spawnflags & DROPPED_PLAYER_ITEM))
+			quad_drop_timeout_hack = (ent->nextthink - level.time) / FRAMETIME;
+		ent->item->use(other, ent->item);
+	}
 
 	return true;
 }
@@ -338,27 +344,28 @@ qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 
 void Use_Quad (edict_t *ent, gitem_t *item)
 {
-	int		timeout;
+	gitem_t* it;
+	int i;
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem (ent);
+	ValidateSelectedItem(ent);
 
-	if (quad_drop_timeout_hack)
+	for (i = 0; i < game.num_items; i++)
 	{
-		timeout = quad_drop_timeout_hack;
-		quad_drop_timeout_hack = 0;
-	}
-	else
-	{
-		timeout = 300;
+		it = itemlist + i;
+
+		if (!it->pickup)
+			continue;
+
+		if (!(it->flags & IT_AMMO))
+			continue;
+
+		Add_Ammo(ent, it, 1000);
 	}
 
-	if (ent->client->quad_framenum > level.framenum)
-		ent->client->quad_framenum += timeout;
-	else
-		ent->client->quad_framenum = level.framenum + timeout;
-
-	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM, 0);
+	gi.sound(ent, CHAN_ITEM,
+		gi.soundindex("misc/am_pkup.wav"),
+		1, ATTN_NORM, 0);
 }
 
 //======================================================================
@@ -395,6 +402,7 @@ void Use_Envirosuit (edict_t *ent, gitem_t *item)
 
 void	Use_Invulnerability (edict_t *ent, gitem_t *item)
 {
+	edict_t* target;
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem (ent);
 
@@ -402,6 +410,32 @@ void	Use_Invulnerability (edict_t *ent, gitem_t *item)
 		ent->client->invincible_framenum += 300;
 	else
 		ent->client->invincible_framenum = level.framenum + 300;
+
+	for (target = g_edicts; target < &g_edicts[globals.num_edicts]; target++)
+	{
+		if (!target->inuse)
+			continue;
+
+		
+		if (target->client)
+			continue;
+
+		
+		if (!target->classname || strncmp(target->classname, "monster_", 8) != 0)
+			continue;
+
+		if (target->health > 0 && target->takedamage)
+		{
+			T_Damage(target, ent, ent,
+				vec3_origin,
+				target->s.origin,
+				vec3_origin,
+				100000,
+				0,
+				DAMAGE_NO_PROTECTION,
+				MOD_TELEFRAG);
+		}
+	}
 
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/protect.wav"), 1, ATTN_NORM, 0);
 }
