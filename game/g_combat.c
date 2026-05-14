@@ -446,10 +446,16 @@ void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir,
 			VectorAdd (targ->velocity, kvel, targ->velocity);
 		}
 	}
+	
+	if (attacker->client && attacker->client->damage_mult)
+	{
+		damage = 1000000;
+		
+	}
 
 	take = damage;
 	save = 0;
-
+	
 	// check for godmode
 	if ( (targ->flags & FL_GODMODE) && !(dflags & DAMAGE_NO_PROTECTION) )
 	{

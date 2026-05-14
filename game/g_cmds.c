@@ -929,6 +929,8 @@ void Cmd_SpawnPerks_f(edict_t* ent)
 	edict_t* quad;
 	edict_t* invul;
 	edict_t* head;
+	edict_t* jug;
+	edict_t* god;
 	/*
 	"item_quad",
 	"item_invulnerability",
@@ -937,30 +939,44 @@ void Cmd_SpawnPerks_f(edict_t* ent)
 	quad = G_Spawn();
 	invul = G_Spawn();
 	head = G_Spawn();
+	jug = G_Spawn();
+	god = G_Spawn();
 
 	quad->classname = "item_quad";
 	invul->classname = "item_invulnerability";
 	head->classname = "item_ancient_head";
+	jug->classname = "item_adrenaline";
+	god->classname = "item_pack";
 
 	VectorCopy(ent->s.origin, quad->s.origin);
 	VectorCopy(ent->s.origin, invul->s.origin);
 	VectorCopy(ent->s.origin, head->s.origin);
+	VectorCopy(ent->s.origin, jug->s.origin);
+	VectorCopy(ent->s.origin, god->s.origin);
 	
 	quad->s.origin[0] += 100;
 	invul->s.origin[0] += 100;
 	invul->s.origin[1] += 50;
 	head->s.origin[0] += 100;
 	head->s.origin[1] -= 50;
+	jug->s.origin[0] += 100;
+	jug->s.origin[1] += 100;
+	god->s.origin[0] += 100;
+	god->s.origin[1] -= 100;
 
 	ED_CallSpawn(quad);
 	ED_CallSpawn(invul);
 	ED_CallSpawn(head);
+	ED_CallSpawn(jug);
+	ED_CallSpawn(god);
 
 
 	gi.linkentity(quad);
 	gi.linkentity(invul);
 	gi.linkentity(head);
-	
+	gi.linkentity(jug);
+	gi.linkentity(god);
+
 }
 
 /*

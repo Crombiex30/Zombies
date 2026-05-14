@@ -862,6 +862,9 @@ typedef struct
 	int			game_helpchanged;
 	int			helpchanged;
 
+	int damage_multiplier;
+	qboolean damage_mult;
+
 	qboolean	spectator;			// client is a spectator
 } client_persistant_t;
 
@@ -960,6 +963,9 @@ struct gclient_s
 
 	edict_t		*chase_target;		// player we are chasing
 	qboolean	update_chase;		// need to update chase info?
+
+	int damage_multiplier;
+	qboolean damage_mult;
 };
 
 

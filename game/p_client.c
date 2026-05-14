@@ -626,6 +626,10 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.max_cells		= 200;
 	client->pers.max_slugs		= 50;
 
+	client->pers.damage_multiplier = 1;
+	client->pers.damage_mult = false;
+
+
 	client->pers.connected = true;
 }
 
@@ -635,6 +639,9 @@ void InitClientResp (gclient_t *client)
 	memset (&client->resp, 0, sizeof(client->resp));
 	client->resp.enterframe = level.framenum;
 	client->resp.coop_respawn = client->pers;
+
+	client->damage_multiplier = 1;
+	client->damage_mult = false;
 }
 
 /*

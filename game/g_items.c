@@ -203,7 +203,7 @@ void Drop_General (edict_t *ent, gitem_t *item)
 qboolean Pickup_Adrenaline (edict_t *ent, edict_t *other)
 {
 	if (!deathmatch->value)
-		other->max_health += 1;
+		other->max_health += 100;
 
 	if (other->health < other->max_health)
 		other->health = other->max_health;
@@ -216,7 +216,8 @@ qboolean Pickup_Adrenaline (edict_t *ent, edict_t *other)
 
 qboolean Pickup_AncientHead (edict_t *ent, edict_t *other)
 {
-	other->max_health += 2;
+	other->client->damage_multiplier = 100;
+	other->client->damage_mult = true;
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
 		SetRespawn (ent, ent->item->quantity);
@@ -264,78 +265,7 @@ qboolean Pickup_Bandolier (edict_t *ent, edict_t *other)
 
 qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 {
-	gitem_t	*item;
-	int		index;
-
-	if (other->client->pers.max_bullets < 300)
-		other->client->pers.max_bullets = 300;
-	if (other->client->pers.max_shells < 200)
-		other->client->pers.max_shells = 200;
-	if (other->client->pers.max_rockets < 100)
-		other->client->pers.max_rockets = 100;
-	if (other->client->pers.max_grenades < 100)
-		other->client->pers.max_grenades = 100;
-	if (other->client->pers.max_cells < 300)
-		other->client->pers.max_cells = 300;
-	if (other->client->pers.max_slugs < 100)
-		other->client->pers.max_slugs = 100;
-
-	item = FindItem("Bullets");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_bullets)
-			other->client->pers.inventory[index] = other->client->pers.max_bullets;
-	}
-
-	item = FindItem("Shells");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_shells)
-			other->client->pers.inventory[index] = other->client->pers.max_shells;
-	}
-
-	item = FindItem("Cells");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_cells)
-			other->client->pers.inventory[index] = other->client->pers.max_cells;
-	}
-
-	item = FindItem("Grenades");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_grenades)
-			other->client->pers.inventory[index] = other->client->pers.max_grenades;
-	}
-
-	item = FindItem("Rockets");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_rockets)
-			other->client->pers.inventory[index] = other->client->pers.max_rockets;
-	}
-
-	item = FindItem("Slugs");
-	if (item)
-	{
-		index = ITEM_INDEX(item);
-		other->client->pers.inventory[index] += item->quantity;
-		if (other->client->pers.inventory[index] > other->client->pers.max_slugs)
-			other->client->pers.inventory[index] = other->client->pers.max_slugs;
-	}
-
-	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
-		SetRespawn (ent, ent->item->quantity);
+	other->flags ^= FL_GODMODE;
 
 	return true;
 }
@@ -1369,6 +1299,7 @@ always owned, never in the world
 /*QUAKED weapon_supershotgun (.3 .3 1) (-16 -16 -16) (16 16 16)
 */
 	{
+
 		"weapon_supershotgun", 
 		Pickup_Weapon,
 		Use_Weapon,
@@ -2214,6 +2145,113 @@ void SP_item_health_mega (edict_t *self)
 	SpawnItem (self, FindItem ("Health"));
 	gi.soundindex ("items/m_health.wav");
 	self->style = HEALTH_IGNORE_MAX|HEALTH_TIMED;
+}
+void MysteryBox_Touch(edict_t* ent, edict_t* other, cplane_t* plane, csurface_t* surf)
+{
+	if (!other->client)
+		return;
+
+	if (other->health <= 0)
+		return;
+
+	ent->touch = NULL;
+	ent->solid = SOLID_NOT;
+
+	int r = rand() % 5;
+
+	gitem_t* item = NULL;
+	gitem_t* ammo = NULL;
+	int ammo_count = 0;
+
+	switch (r)
+	{
+	case 0:
+		item = FindItem("Shotgun");
+		ammo = FindItem("Shells");
+		ammo_count = 20;
+		break;
+
+	case 1:
+		item = FindItem("Super Shotgun");
+		ammo = FindItem("Shells");
+		ammo_count = 20;
+		break;
+
+	case 2:
+		item = FindItem("Machinegun");
+		ammo = FindItem("Bullets");
+		ammo_count = 50;
+		break;
+
+	case 3:
+		item = FindItem("Chaingun");
+		ammo = FindItem("Bullets");
+		ammo_count = 100;
+		break;
+
+	case 4:
+		item = FindItem("Grenades");
+		ammo = FindItem("Grenades");
+		ammo_count = 10;
+		break;
+	case 5:
+		item = FindItem("Grenade Launcher");
+		ammo = FindItem("Grenades");
+		ammo_count = 10;
+		break;
+	case 6:
+		item = FindItem("Rocket Launcher");
+		ammo = FindItem("Rocket");
+		ammo_count = 5;
+		break;
+	case 7:
+		item = FindItem("HyperBlaster");
+		ammo = FindItem("Cells");
+		ammo_count = 100;
+		break;
+	case 8:
+		item = FindItem("HyperBlaster");
+		ammo - FindItem("Shells");
+		ammo_count = 5;
+		break;
+	case 9:
+		item = FindItem("BFG10K");
+		ammo - FindItem("Cells");
+		ammo_count = 3;
+		break;
+
+	}
+
+	if (item)
+	{
+		ent->touch = NULL;
+		ent->solid = SOLID_NOT;
+
+		other->client->pers.inventory[ITEM_INDEX(item)]++;
+		
+		if (ammo)
+			other->client->pers.inventory[ITEM_INDEX(ammo)] += ammo_count;
+
+		other->client->newweapon = item;
+		ChangeWeapon(other);
+
+		G_FreeEdict(ent);
+	}
+	
+
+	gi.linkentity(ent);
+}
+void SP_item_mystery_box(edict_t* ent)
+{
+	ent->solid = SOLID_TRIGGER;
+	ent->movetype = MOVETYPE_NONE;
+
+	ent->model = "models/items/mega_h/tris.md2";
+	gi.setmodel(ent, ent->model);
+
+	ent->touch = MysteryBox_Touch;
+
+	gi.linkentity(ent);
 }
 
 
