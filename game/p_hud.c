@@ -242,8 +242,9 @@ void HelpComputer (edict_t *ent)
 		"xv 32 yv 8 picn inventory "			// background
 		"xv 0 yv 24 cstring2 \"Help Screen\" "		// level name
 		"xv 0 yv 54 cstring2 \"Press ~ and type in \" "		// help 1
-		"xv 0 yv 64 cstring2 \"Brain_Rot to begin mod\" "
-		"xv 0 yv 84 cstring2 \"Survive as long as you can\" "
+		"xv 0 yv 64 cstring2 \"spawnPerks to spawn perks\" "
+		"xv 0 yv 84 cstring2 \"type in spawn item_mystery_box \""
+		"xv 0 yv 94 cstring2 \"to use mystery box\" "
 		//"xv 0 yv 110 cstring2 \"%s\" "		// help 2
 		//"xv 50 yv 164 string2 \" kills     goals    secrets\" "
 		//"xv 50 yv 172 string2 \"%3i/%3i     %i/%i       %i/%i\" ", 
